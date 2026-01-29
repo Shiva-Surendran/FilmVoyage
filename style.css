@@ -1,0 +1,12 @@
+/* Add this to your CSS if it's missing */
+.hidden {
+    display: none !important;
+}
+
+/* Ensure the button looks clickable when visible */
+#load-more {
+    display: block; /* Default to block */
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
