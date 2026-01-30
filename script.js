@@ -109,7 +109,6 @@ async function fetchMoviesForCountry(countryName) {
      `&page=${currentPage}`;
 ;
 
-  url += `&page=${currentPage}`;
 
   if (selectedGenreId) {
     url += `&with_genres=${selectedGenreId}`;
@@ -124,11 +123,14 @@ async function fetchMoviesForCountry(countryName) {
     const loadMoreBtn = document.getElementById("load-more");
     if (loadMoreBtn) {
       // Hide button if no more pages, show it if there are
-      if (currentPage >= totalPages || totalPages === 0) {
-        loadMoreBtn.classList.add("hidden");
-      } else {
-        loadMoreBtn.classList.remove("hidden");
-      }
+     if (totalPages <= 1) {
+  loadMoreBtn.classList.add("hidden");
+} else if (currentPage < totalPages) {
+  loadMoreBtn.classList.remove("hidden");
+} else {
+  loadMoreBtn.classList.add("hidden");
+}
+
     }
 
     updateSidebarWithMovies(countryName, data.results, currentPage === 1 );
@@ -200,19 +202,15 @@ function renderGenreButtons(genres) {
   d3.selectAll(".btn-genre").on("click", function () {
     const isAlreadyActive = d3.select(this).classed("active");
 
-    // 1. Reset all buttons first
     d3.selectAll(".btn-genre").classed("active", false);
 
     if (isAlreadyActive) {
-      // 2. If it was already active, "unclick" it by keeping selectedGenreId null
       selectedGenreId = null;
     } else {
-      // 3. Otherwise, set the new genre and make it look active
       d3.select(this).classed("active", true);
       selectedGenreId = this.dataset.genreId;
     }
 
-    // 4. Re-fetch movies (this will now respect the null/new genre)
     if (selectedCountryISO) {
       currentPage = 1;
       fetchMoviesForCountry(d3.select("#sidebar-country").text());
